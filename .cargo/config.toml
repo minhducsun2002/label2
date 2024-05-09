@@ -1,0 +1,2 @@
+SFML_INCLUDE_DIR = "/usr/include/SFML/"
+SFML_LIBS_DIR = "/usr/lib/"
