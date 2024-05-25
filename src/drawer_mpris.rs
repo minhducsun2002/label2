@@ -1,8 +1,9 @@
 use std::cmp::min;
-use chrono::{DateTime, Local, Timelike, TimeZone, Utc};
+use chrono::{Timelike, TimeZone, Utc};
 use sfml::graphics::{Color, Font, Text, Transformable};
 use sfml::SfBox;
 use sfml::system::Vector2f;
+
 use crate::mpris::PlayState;
 
 fn get_text<'a, 'b>(font: &'a SfBox<Font>, content: &'b str, view_size: Vector2f<>) -> Text<'a> {
