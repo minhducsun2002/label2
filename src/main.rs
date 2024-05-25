@@ -39,6 +39,8 @@ fn main() {
         mpris(tx);
     });
 
+    let mut frame = 2;
+
     while rw.is_open() {
         while let Some(ev) = rw.poll_event() {
             match ev {
@@ -53,6 +55,19 @@ fn main() {
         }
 
         if let Ok(result) = rx.recv() {
+            if result.is_none() {
+                if frame != 2 {
+                    rw.set_framerate_limit(2);
+                    println!("Framerate 2");
+                    frame = 2;
+                }
+            } else {
+                if frame != 15 {
+                    rw.set_framerate_limit(15);
+                    println!("Framerate 15");
+                    frame = 15;
+                }
+            }
             drawer.music_state = result;
         }
 
