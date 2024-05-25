@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 sfml = "0.21.0"
 chrono = "0.4.38"
+mpris = "2.0.1"

@@ -4,6 +4,8 @@ use chrono::{DateTime, Local, Timelike};
 use sfml::graphics::{Color, Font, RenderTarget, RenderWindow, Text, Transformable};
 use sfml::SfBox;
 use sfml::system::{Vector2f};
+use crate::drawer_mpris::music;
+use crate::mpris::PlayState;
 
 fn clock(font: &SfBox<Font>, view_size: Vector2f) -> Text {
     let now = SystemTime::now();
@@ -26,23 +28,26 @@ fn clock(font: &SfBox<Font>, view_size: Vector2f) -> Text {
     );
 
     text.set_position(
-        Vector2f::new(
-            view_size.x / 2f32, view_size.y / 2f32
-        )
+        Vector2f::new(view_size.x / 2f32, view_size.y / 2f32)
     );
 
     return text
 }
 
 pub struct Drawer {
-    clock_font: SfBox<Font>
+    clock_font: SfBox<Font>,
+    music_font: SfBox<Font>,
+    pub music_state: Option<PlayState>
 }
 
 impl Drawer {
     pub fn new() -> Drawer {
         let font = Font::from_file("/usr/share/fonts/TTF/RobotoMono-Regular.ttf").unwrap();
+        let music_font = Font::from_file("/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc").unwrap();
         return Drawer {
-            clock_font: font
+            clock_font: font,
+            music_state: None,
+            music_font
         }
     }
 
@@ -51,6 +56,21 @@ impl Drawer {
         window.clear(Color::rgb(0, 137, 156));
 
         let text = clock(&self.clock_font, window.view().size());
+
+        if let Some(state) = &self.music_state {
+            let s = state.clone();
+            let (song, start, end) = music(&self.music_font, s, window.view().size());
+            window.draw(&song);
+
+            if let Some(text) = start {
+                window.draw(&text);
+            }
+
+            if let Some(text) = end {
+                window.draw(&text);
+            }
+        }
+
         window.draw(&text);
         window.display();
     }
