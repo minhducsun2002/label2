@@ -51,9 +51,29 @@ impl Drawer {
         }
     }
 
+    fn bg_color(&self) -> (u8, u8, u8) {
+        let now = SystemTime::now();
+        let dt: DateTime<Local> = now.clone().into();
+        const NOON: u32 = 0x00_89_9c_00;
+        const NIGHT: u32 = 0x00_46_50_00;
+        let out;
+        if dt.hour() >= 23 || dt.hour() < 6 {
+            out = NIGHT
+        } else {
+            out = NOON
+        }
+
+        return (
+            ((out >> 24) & 0xFF) as u8,
+            ((out >> 16) & 0xFF) as u8,
+            ((out >> 8) & 0xFF) as u8
+        )
+    }
+
     pub fn draw(&self, window: &mut RenderWindow) {
         window.clear(Color::BLACK);
-        window.clear(Color::rgb(0, 137, 156));
+        let (r, g, b) = self.bg_color();
+        window.clear(Color::rgb(r, g, b));
 
         let text = clock(&self.clock_font, window.view().size());
 
