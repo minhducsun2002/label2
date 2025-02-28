@@ -11,7 +11,7 @@ use crate::mpris::mpris;
 
 fn main() {
     let window_id = env::var("XSCREENSAVER_WINDOW");
-    let mut rw;
+    let mut maybe_render_window;
     let mut xscreensaver_window = 0;
 
     if let Ok(wid) = window_id {
@@ -21,17 +21,28 @@ fn main() {
     }
     if xscreensaver_window != 0 {
         unsafe {
-            rw = RenderWindow::from_handle(xscreensaver_window as Handle, &ContextSettings::default());
+            maybe_render_window = RenderWindow::from_handle(xscreensaver_window as Handle, &ContextSettings::default());
         }
     } else {
-        rw = RenderWindow::new(
+        maybe_render_window = RenderWindow::new(
             (1280, 720),
             "Yep",
             Style::DEFAULT,
             &ContextSettings::default()
         );
     }
-
+    
+    let mut rw;
+    
+    match maybe_render_window {
+        Ok(r) => {
+            rw = r
+        }
+        Err(e) => {
+            panic!("{}", e);
+        }
+    }
+    
     rw.set_framerate_limit(2);
     let mut drawer = Drawer::new();
     let (tx, rx) = mpsc::channel();
@@ -47,7 +58,7 @@ fn main() {
                 Event::Closed => rw.close(),
                 Event::Resized { width, height } => {
                     let rect = FloatRect::new(0f32, 0f32, width as f32, height as f32);
-                    let view = View::from_rect(rect);
+                    let view = View::from_rect(rect).unwrap(); // so this can blow up?
                     rw.set_view(&view);
                 },
                 _ => {}
@@ -58,14 +69,14 @@ fn main() {
             if result.is_none() {
                 if frame != 2 {
                     rw.set_framerate_limit(2);
-                    println!("Framerate 2");
                     frame = 2;
+                    println!("Framerate {}", frame);
                 }
             } else {
                 if frame != 15 {
                     rw.set_framerate_limit(15);
-                    println!("Framerate 15");
                     frame = 15;
+                    println!("Framerate {}", frame);
                 }
             }
             drawer.music_state = result;

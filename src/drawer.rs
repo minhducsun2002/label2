@@ -2,12 +2,12 @@ use std::cmp::min;
 use std::time::SystemTime;
 use chrono::{DateTime, Local, Timelike};
 use sfml::graphics::{Color, Font, RenderTarget, RenderWindow, Text, Transformable};
-use sfml::SfBox;
+use sfml::cpp::FBox;
 use sfml::system::{Vector2f};
 use crate::drawer_mpris::music;
 use crate::mpris::PlayState;
 
-fn clock(font: &SfBox<Font>, view_size: Vector2f) -> Text {
+fn clock(font: &FBox<Font>, view_size: Vector2f) -> Text {
     let now = SystemTime::now();
     let dt: DateTime<Local> = now.clone().into();
     let time_text = format!("{:0>2}:{:0>2}:{:0>2}", dt.hour(), dt.minute(), dt.second());
@@ -35,8 +35,8 @@ fn clock(font: &SfBox<Font>, view_size: Vector2f) -> Text {
 }
 
 pub struct Drawer {
-    clock_font: SfBox<Font>,
-    music_font: SfBox<Font>,
+    clock_font: FBox<Font>,
+    music_font: FBox<Font>,
     pub music_state: Option<PlayState>
 }
 

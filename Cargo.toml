@@ -6,6 +6,6 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-sfml = "0.21.0"
+sfml = "0.24.0"
 chrono = "0.4.38"
 mpris = "2.0.1"

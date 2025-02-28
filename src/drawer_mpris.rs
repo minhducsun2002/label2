@@ -1,18 +1,18 @@
 use std::cmp::min;
 use chrono::{Timelike, TimeZone, Utc};
 use sfml::graphics::{Color, Font, Text, Transformable};
-use sfml::SfBox;
+use sfml::cpp::FBox;
 use sfml::system::Vector2f;
 
 use crate::mpris::PlayState;
 
-fn get_text<'a, 'b>(font: &'a SfBox<Font>, content: &'b str, view_size: Vector2f<>) -> Text<'a> {
+fn get_text<'a, 'b>(font: &'a FBox<Font>, content: &'b str, view_size: Vector2f<>) -> Text<'a> {
     let text = Text::new(content, &font, min(view_size.x as u32, view_size.y as u32) / 30);
 
     return text;
 }
 
-fn song(font: &SfBox<Font>, state: PlayState, view_size: Vector2f) -> Text {
+fn song(font: &FBox<Font>, state: PlayState, view_size: Vector2f) -> Text {
     let artist: String = state.artist.join(", ");
     let title = state.title;
 
@@ -39,7 +39,7 @@ fn song(font: &SfBox<Font>, state: PlayState, view_size: Vector2f) -> Text {
     return text;
 }
 
-fn time(font: &SfBox<Font>, seconds: u32, view_size: Vector2f, is_start: bool) -> Text {
+fn time(font: &FBox<Font>, seconds: u32, view_size: Vector2f, is_start: bool) -> Text {
     let dt = Utc.timestamp_opt(seconds as i64, 0).unwrap();
     let time_text;
 
@@ -80,7 +80,7 @@ fn time(font: &SfBox<Font>, seconds: u32, view_size: Vector2f, is_start: bool) -
 }
 
 // artist - song, duration elapsed, total
-pub fn music(font: &SfBox<Font>, state: PlayState, view_size: Vector2f) -> (Text, Option<Text>, Option<Text>) {
+pub fn music(font: &FBox<Font>, state: PlayState, view_size: Vector2f) -> (Text, Option<Text>, Option<Text>) {
     let song_text = song(font, state.clone(), view_size);
 
     if state.seconds_total != 0 {
